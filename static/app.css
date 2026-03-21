@@ -1,0 +1,118 @@
+:root {
+  --portal-bg: #0b1220;
+  --portal-surface: #121c2f;
+  --portal-surface-2: #16233a;
+  --portal-border: rgba(255, 255, 255, 0.08);
+  --portal-accent: #3fb950;
+  --portal-text: #e6edf3;
+  --portal-muted: #94a3b8;
+}
+
+body.portal-body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(63, 185, 80, 0.16), transparent 26%),
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 22%),
+    linear-gradient(180deg, #08101d 0%, #0f172a 100%);
+  color: var(--portal-text);
+}
+
+.portal-nav {
+  background: rgba(8, 16, 29, 0.86);
+  backdrop-filter: blur(12px);
+}
+
+.portal-card,
+.portal-stat {
+  background: linear-gradient(180deg, rgba(18, 28, 47, 0.96), rgba(12, 20, 34, 0.98));
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+}
+
+.portal-stat {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.card code {
+  color: #c4f1cb;
+}
+
+.table-dark {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: rgba(255, 255, 255, 0.03);
+}
+
+.form-control,
+.form-control:focus {
+  background: rgba(8, 16, 29, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--portal-text);
+}
+
+.form-control::placeholder {
+  color: #74839b;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2f9e44, #3fb950);
+  border-color: #3fb950;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.text-secondary {
+  color: var(--portal-muted) !important;
+}
+
+.usage-markdown {
+  background: rgba(8, 16, 29, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #d8e3ef;
+}
+
+.usage-markdown h1,
+.usage-markdown h2,
+.usage-markdown h3,
+.usage-markdown h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.usage-markdown h1:first-child,
+.usage-markdown h2:first-child,
+.usage-markdown h3:first-child,
+.usage-markdown h4:first-child {
+  margin-top: 0;
+}
+
+.usage-markdown pre,
+.usage-markdown code {
+  color: #d8f7de;
+}
+
+.usage-markdown pre {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+.usage-markdown table {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.usage-markdown th,
+.usage-markdown td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 0.65rem;
+}

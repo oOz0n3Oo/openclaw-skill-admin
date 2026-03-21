@@ -1,0 +1,17 @@
+services:
+  openclaw-skill-admin:
+    build: .
+    container_name: openclaw-skill-admin
+    ports:
+      - "5057:5057"
+    environment:
+      SECRET_KEY: change-me
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin123
+      OPENCLAW_WORKSPACE: /data/openclaw-workspace
+      PORTAL_DB: /data/state/portal.db
+      CLAWHUB_BIN: /usr/local/bin/clawhub
+    volumes:
+      - /Users/n0tst3v3/.openclaw/workspace:/data/openclaw-workspace
+      - ./data:/data/state
+    restart: unless-stopped

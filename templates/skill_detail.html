@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}{{ skill.slug }} · OpenClaw Skill Admin{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
+  <div>
+    <a class="small text-decoration-none text-secondary" href="{{ url_for('dashboard') }}">← Back to dashboard</a>
+    <h1 class="h2 mt-2 mb-1">{{ skill.title }}</h1>
+    <div class="text-secondary">{{ skill.slug }}</div>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <form method="post" action="{{ url_for('update_skill', slug=skill.slug) }}">
+      <button class="btn btn-outline-light" type="submit">Update</button>
+    </form>
+    <form method="post" action="{{ url_for('delete_skill', slug=skill.slug) }}" onsubmit="return confirm('Delete {{ skill.slug }}?');">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-4">
+    <div class="card portal-card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Skill Metadata</h2>
+        <dl class="row small mb-0">
+          <dt class="col-5 text-secondary">Installed version</dt>
+          <dd class="col-7">{{ skill.installed_version or "Unknown" }}</dd>
+          <dt class="col-5 text-secondary">Published version</dt>
+          <dd class="col-7">{{ skill.version or "Unknown" }}</dd>
+          <dt class="col-5 text-secondary">Installed at</dt>
+          <dd class="col-7">{{ skill.installed_at|dt }}</dd>
+          <dt class="col-5 text-secondary">Published at</dt>
+          <dd class="col-7">{{ skill.published_at|dt }}</dd>
+          <dt class="col-5 text-secondary">Modified at</dt>
+          <dd class="col-7">{{ skill.modified_at|dt }}</dd>
+          <dt class="col-5 text-secondary">Registry</dt>
+          <dd class="col-7">{{ skill.registry or "Unknown" }}</dd>
+          <dt class="col-5 text-secondary">Owner</dt>
+          <dd class="col-7">{{ skill.owner_id or "Unknown" }}</dd>
+          <dt class="col-5 text-secondary">Size</dt>
+          <dd class="col-7">{{ skill.size_bytes|bytesize }}</dd>
+          <dt class="col-5 text-secondary">File count</dt>
+          <dd class="col-7">{{ skill.file_count }}</dd>
+          <dt class="col-5 text-secondary">Portal last used</dt>
+          <dd class="col-7">{{ skill.portal_last_used_at|dt }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-8">
+    <div class="card portal-card mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Summary</h2>
+        <p class="mb-0">{{ skill.summary or "No summary found in README or SKILL.md." }}</p>
+      </div>
+    </div>
+
+    <div class="card portal-card mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">How To Use</h2>
+        {% if skill.usage_instructions %}
+        <div class="usage-markdown">{{ skill.usage_instructions|markdown }}</div>
+        {% else %}
+        <p class="mb-0 text-secondary">No usage instructions were detected in <code>SKILL.md</code> or <code>README.md</code>.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card portal-card mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Paths</h2>
+        <div class="small mb-2"><span class="text-secondary">Skill:</span> <code>{{ skill.skill_path }}</code></div>
+        {% if skill.readme_path %}
+        <div class="small"><span class="text-secondary">README:</span> <code>{{ skill.readme_path }}</code></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card portal-card">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Recent Portal Activity</h2>
+        <div class="table-responsive">
+          <table class="table table-dark align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>When</th>
+                <th>Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in activity %}
+              <tr>
+                <td>{{ row["action"] }}</td>
+                <td>{{ row["created_at"]|dt }}</td>
+                <td>{{ row["detail"] or "" }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="3" class="text-center text-secondary py-4">No recorded portal activity.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

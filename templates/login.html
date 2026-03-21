@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Login · OpenClaw Skill Admin{% endblock %}
+{% block content %}
+<div class="row justify-content-center pt-5">
+  <div class="col-12 col-md-5 col-lg-4">
+    <div class="card shadow-lg portal-card">
+      <div class="card-body p-4 p-lg-5">
+        <h1 class="h3 mb-3">Admin Login</h1>
+        <p class="text-secondary mb-4">
+          Sign in to manage skills in <code>{{ skills_path }}</code>.
+        </p>
+        <form method="post" class="d-grid gap-3">
+          <div>
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" id="username" name="username" value="admin" required>
+          </div>
+          <div>
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" name="password" type="password" required>
+          </div>
+          <button class="btn btn-primary btn-lg" type="submit">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
