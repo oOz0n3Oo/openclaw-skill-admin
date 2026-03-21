@@ -3,15 +3,15 @@ services:
     build: .
     container_name: openclaw-skill-admin
     ports:
-      - "5057:5057"
+      - "${SKILL_ADMIN_PORT:-5057}:5057"
     environment:
-      SECRET_KEY: change-me
-      ADMIN_USERNAME: admin
-      ADMIN_PASSWORD: admin123
+      SECRET_KEY: ${SECRET_KEY}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       OPENCLAW_WORKSPACE: /data/openclaw-workspace
       PORTAL_DB: /data/state/portal.db
       CLAWHUB_BIN: /usr/local/bin/clawhub
     volumes:
-      - /Users/n0tst3v3/.openclaw/workspace:/data/openclaw-workspace
+      - ${OPENCLAW_WORKSPACE_HOST}:/data/openclaw-workspace
       - ./data:/data/state
     restart: unless-stopped

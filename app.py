@@ -256,7 +256,7 @@ def resolve_password_hash() -> str:
     password_hash = os.environ.get("ADMIN_PASSWORD_HASH", "").strip()
     if password_hash:
         return password_hash
-    password = os.environ.get("ADMIN_PASSWORD", "admin123")
+    password = os.environ.get("ADMIN_PASSWORD", "change-me-now")
     return generate_password_hash(password)
 
 
