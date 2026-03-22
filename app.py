@@ -347,14 +347,14 @@ def get_admin_user(db: sqlite3.Connection, username: str) -> sqlite3.Row | None:
 
 
 def get_client_ip(req) -> str:
+    real_ip = req.headers.get("X-Real-IP", "").strip()
+    if real_ip:
+        return real_ip
     forwarded = req.headers.get("X-Forwarded-For", "").strip()
     if forwarded:
         parts = [part.strip() for part in forwarded.split(",") if part.strip()]
         if parts:
-            return parts[0]
-    real_ip = req.headers.get("X-Real-IP", "").strip()
-    if real_ip:
-        return real_ip
+            return parts[-1]
     return req.remote_addr or "unknown"
 
 
