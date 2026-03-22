@@ -38,5 +38,15 @@
 
       {% block content %}{% endblock %}
     </main>
+    <script>
+      document.querySelectorAll("[data-utc]").forEach((el) => {
+        const raw = el.getAttribute("data-utc");
+        if (!raw || raw === "Unknown") return;
+        const date = new Date(raw);
+        if (Number.isNaN(date.getTime())) return;
+        el.textContent = date.toLocaleString();
+        el.title = raw;
+      });
+    </script>
   </body>
 </html>

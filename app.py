@@ -66,9 +66,7 @@ def create_app() -> Flask:
     def format_dt(value: float | int | None) -> str:
         if not value:
             return "Unknown"
-        return datetime.fromtimestamp(value, tz=timezone.utc).astimezone().strftime(
-            "%Y-%m-%d %H:%M:%S %Z"
-        )
+        return datetime.fromtimestamp(value, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     @app.template_filter("bytesize")
     def format_bytes(value: int | None) -> str:
@@ -349,6 +347,16 @@ def get_admin_user(db: sqlite3.Connection, username: str) -> sqlite3.Row | None:
 
 
 def get_client_ip(req) -> str:
+    direct_headers = [
+        "CF-Connecting-IP",
+        "True-Client-IP",
+        "X-Real-IP",
+    ]
+    for header in direct_headers:
+        value = req.headers.get(header, "").strip()
+        if value:
+            return value
+
     forwarded = req.headers.get("X-Forwarded-For", "").strip()
     if forwarded:
         parts = [part.strip() for part in forwarded.split(",") if part.strip()]

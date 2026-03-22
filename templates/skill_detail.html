@@ -28,11 +28,11 @@
           <dt class="col-5 text-secondary">Published version</dt>
           <dd class="col-7">{{ skill.version or "Unknown" }}</dd>
           <dt class="col-5 text-secondary">Installed at</dt>
-          <dd class="col-7">{{ skill.installed_at|dt }}</dd>
+          <dd class="col-7"><span data-utc="{{ skill.installed_at|dt }}">{{ skill.installed_at|dt }}</span></dd>
           <dt class="col-5 text-secondary">Published at</dt>
-          <dd class="col-7">{{ skill.published_at|dt }}</dd>
+          <dd class="col-7"><span data-utc="{{ skill.published_at|dt }}">{{ skill.published_at|dt }}</span></dd>
           <dt class="col-5 text-secondary">Modified at</dt>
-          <dd class="col-7">{{ skill.modified_at|dt }}</dd>
+          <dd class="col-7"><span data-utc="{{ skill.modified_at|dt }}">{{ skill.modified_at|dt }}</span></dd>
           <dt class="col-5 text-secondary">Registry</dt>
           <dd class="col-7">{{ skill.registry or "Unknown" }}</dd>
           <dt class="col-5 text-secondary">Owner</dt>
@@ -42,7 +42,7 @@
           <dt class="col-5 text-secondary">File count</dt>
           <dd class="col-7">{{ skill.file_count }}</dd>
           <dt class="col-5 text-secondary">Portal last used</dt>
-          <dd class="col-7">{{ skill.portal_last_used_at|dt }}</dd>
+          <dd class="col-7"><span data-utc="{{ skill.portal_last_used_at|dt }}">{{ skill.portal_last_used_at|dt }}</span></dd>
         </dl>
       </div>
     </div>
@@ -93,7 +93,7 @@
               {% for row in activity %}
               <tr>
                 <td>{{ row["action"] }}</td>
-                <td>{{ row["created_at"]|dt }}</td>
+                <td><span data-utc="{{ row["created_at"]|dt }}">{{ row["created_at"]|dt }}</span></td>
                 <td>{{ row["detail"] or "" }}</td>
               </tr>
               {% else %}
