@@ -112,7 +112,8 @@ def create_app() -> Flask:
             password = request.form.get("password", "")
             user = get_admin_user(g.db, username)
             if user and check_password_hash(user["password_hash"], password):
-                client_ip = get_client_ip(request)
+                browser_ip = request.form.get("browser_ip", "").strip()
+                client_ip = browser_ip or get_client_ip(request)
                 g.db.execute(
                     """
                     UPDATE admin_users
@@ -459,10 +460,12 @@ def get_skill(app: Flask, db: sqlite3.Connection, slug: str) -> SkillRecord | No
 
 def summarize(skills: list[SkillRecord]) -> dict[str, Any]:
     admin = get_admin_user(g.db, session.get("username", "admin")) if hasattr(g, "db") else None
+    latest_skill = max(skills, key=lambda skill: skill.installed_at or 0, default=None)
     return {
         "count": len(skills),
         "total_size": sum(skill.size_bytes for skill in skills),
-        "latest_install": max((skill.installed_at or 0 for skill in skills), default=0) or None,
+        "latest_install": latest_skill.installed_at if latest_skill else None,
+        "latest_install_skill": latest_skill.title if latest_skill else None,
         "last_login_at": admin["last_login_at"] if admin else None,
         "last_login_ip": admin["last_login_ip"] if admin else None,
     }

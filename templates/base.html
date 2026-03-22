@@ -47,6 +47,15 @@
         el.textContent = date.toLocaleString();
         el.title = raw;
       });
+
+      document.querySelectorAll("[data-browser-ip-target]").forEach((input) => {
+        fetch("https://api.ipify.org?format=json")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.ip) input.value = data.ip;
+          })
+          .catch(() => {});
+      });
     </script>
   </body>
 </html>

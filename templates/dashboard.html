@@ -33,7 +33,8 @@
     <div class="card portal-stat">
       <div class="card-body">
         <div class="text-secondary small text-uppercase">Latest Install</div>
-        <div class="fw-semibold">{{ summary.latest_install|dt }}</div>
+        <div class="fw-semibold">{{ summary.latest_install_skill or "Unknown" }}</div>
+        <div class="small text-secondary" data-utc="{{ summary.latest_install|dt }}">{{ summary.latest_install|dt }}</div>
       </div>
     </div>
   </div>
@@ -135,15 +136,15 @@
                   {% endif %}
                 </td>
                 <td>
-                  <div>{{ skill.installed_at|dt }}</div>
-                  <div class="small text-secondary">Published {{ skill.published_at|dt }}</div>
+                  <div data-utc="{{ skill.installed_at|dt }}">{{ skill.installed_at|dt }}</div>
+                  <div class="small text-secondary">Published <span data-utc="{{ skill.published_at|dt }}">{{ skill.published_at|dt }}</span></div>
                 </td>
                 <td>
                   <div>{{ skill.size_bytes|bytesize }}</div>
                   <div class="small text-secondary">{{ skill.file_count }} files</div>
                 </td>
                 <td>
-                  <div>{{ skill.portal_last_used_at|dt }}</div>
+                  <div data-utc="{{ skill.portal_last_used_at|dt }}">{{ skill.portal_last_used_at|dt }}</div>
                   <div class="small text-secondary">{{ skill.portal_last_action or "No portal activity" }}</div>
                 </td>
                 <td class="text-end">
