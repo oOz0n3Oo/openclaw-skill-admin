@@ -352,10 +352,10 @@ def get_client_ip(req) -> str:
         parts = [part.strip() for part in forwarded.split(",") if part.strip()]
         if parts:
             return parts[0]
-    forwarded_single = req.headers.get("X-Forwarded", "").strip()
-    if forwarded_single:
-        return forwarded_single
-    return "unknown"
+    real_ip = req.headers.get("X-Real-IP", "").strip()
+    if real_ip:
+        return real_ip
+    return req.remote_addr or "unknown"
 
 
 @dataclass
