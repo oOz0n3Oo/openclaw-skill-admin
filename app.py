@@ -114,6 +114,17 @@ def create_app() -> Flask:
             password = request.form.get("password", "")
             user = get_admin_user(g.db, username)
             if user and check_password_hash(user["password_hash"], password):
+                client_ip = get_client_ip(request)
+                g.db.execute(
+                    """
+                    UPDATE admin_users
+                    SET last_login_at = ?, last_login_ip = ?, updated_at = ?
+                    WHERE username = ?
+                    """,
+                    (time.time(), client_ip, time.time(), username),
+                )
+                g.db.commit()
+                record_activity(g.db, "_admin", "login", f"{username} from {client_ip}")
                 session.clear()
                 session["authenticated"] = True
                 session["username"] = username
@@ -276,10 +287,13 @@ def init_db(app: Flask) -> None:
             username TEXT PRIMARY KEY,
             password_hash TEXT NOT NULL,
             created_at REAL NOT NULL,
-            updated_at REAL NOT NULL
+            updated_at REAL NOT NULL,
+            last_login_at REAL,
+            last_login_ip TEXT
         )
         """
     )
+    ensure_admin_user_columns(conn)
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS skill_activity (
@@ -294,6 +308,16 @@ def init_db(app: Flask) -> None:
     seed_admin_user(conn, app.config["ADMIN_USERNAME"], app.config["ADMIN_PASSWORD_HASH"])
     conn.commit()
     conn.close()
+
+
+def ensure_admin_user_columns(conn: sqlite3.Connection) -> None:
+    columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(admin_users)").fetchall()
+    }
+    if "last_login_at" not in columns:
+        conn.execute("ALTER TABLE admin_users ADD COLUMN last_login_at REAL")
+    if "last_login_ip" not in columns:
+        conn.execute("ALTER TABLE admin_users ADD COLUMN last_login_ip TEXT")
 
 
 def seed_admin_user(conn: sqlite3.Connection, username: str, password_hash: str) -> None:
@@ -315,9 +339,22 @@ def seed_admin_user(conn: sqlite3.Connection, username: str, password_hash: str)
 
 def get_admin_user(db: sqlite3.Connection, username: str) -> sqlite3.Row | None:
     return db.execute(
-        "SELECT username, password_hash, created_at, updated_at FROM admin_users WHERE username = ?",
+        """
+        SELECT username, password_hash, created_at, updated_at, last_login_at, last_login_ip
+        FROM admin_users
+        WHERE username = ?
+        """,
         (username,),
     ).fetchone()
+
+
+def get_client_ip(req) -> str:
+    forwarded = req.headers.get("X-Forwarded-For", "").strip()
+    if forwarded:
+        parts = [part.strip() for part in forwarded.split(",") if part.strip()]
+        if parts:
+            return parts[0]
+    return req.remote_addr or "unknown"
 
 
 @dataclass
@@ -413,11 +450,13 @@ def get_skill(app: Flask, db: sqlite3.Connection, slug: str) -> SkillRecord | No
 
 
 def summarize(skills: list[SkillRecord]) -> dict[str, Any]:
+    admin = get_admin_user(g.db, session.get("username", "admin")) if hasattr(g, "db") else None
     return {
         "count": len(skills),
         "total_size": sum(skill.size_bytes for skill in skills),
         "latest_install": max((skill.installed_at or 0 for skill in skills), default=0) or None,
-        "latest_use": max((skill.portal_last_used_at or 0 for skill in skills), default=0) or None,
+        "last_login_at": admin["last_login_at"] if admin else None,
+        "last_login_ip": admin["last_login_ip"] if admin else None,
     }
 
 

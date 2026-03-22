@@ -40,8 +40,9 @@
   <div class="col-12 col-md-6 col-xl-3">
     <div class="card portal-stat">
       <div class="card-body">
-        <div class="text-secondary small text-uppercase">Last Portal Use</div>
-        <div class="fw-semibold">{{ summary.latest_use|dt }}</div>
+        <div class="text-secondary small text-uppercase">Last Login IP</div>
+        <div class="fw-semibold">{{ summary.last_login_ip or "Unknown" }}</div>
+        <div class="small text-secondary">{{ summary.last_login_at|dt }}</div>
       </div>
     </div>
   </div>
