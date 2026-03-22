@@ -112,8 +112,7 @@ def create_app() -> Flask:
             password = request.form.get("password", "")
             user = get_admin_user(g.db, username)
             if user and check_password_hash(user["password_hash"], password):
-                browser_ip = request.form.get("browser_ip", "").strip()
-                client_ip = browser_ip or get_client_ip(request)
+                client_ip = get_client_ip(request)
                 g.db.execute(
                     """
                     UPDATE admin_users
