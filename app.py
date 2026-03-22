@@ -347,22 +347,15 @@ def get_admin_user(db: sqlite3.Connection, username: str) -> sqlite3.Row | None:
 
 
 def get_client_ip(req) -> str:
-    direct_headers = [
-        "CF-Connecting-IP",
-        "True-Client-IP",
-        "X-Real-IP",
-    ]
-    for header in direct_headers:
-        value = req.headers.get(header, "").strip()
-        if value:
-            return value
-
     forwarded = req.headers.get("X-Forwarded-For", "").strip()
     if forwarded:
         parts = [part.strip() for part in forwarded.split(",") if part.strip()]
         if parts:
             return parts[0]
-    return req.remote_addr or "unknown"
+    forwarded_single = req.headers.get("X-Forwarded", "").strip()
+    if forwarded_single:
+        return forwarded_single
+    return "unknown"
 
 
 @dataclass
